@@ -65,49 +65,7 @@ def nlms(u, d, M, step, eps=0.001, leak=0, initCoeffs=None, N=None,
         If number of iterations N is greater than len(u)-M, number of filter
         taps M is negative, or if step-size or leakage is outside specified
         range.
-
-    Minimal Working Example
-    -----------------------
-    >>> import numpy as np
-    >>>
-    >>> np.random.seed(1337)
-    >>> ulen = 2000
-    >>> coeff = np.concatenate(([4], np.zeros(10), [-11], np.zeros(7), [0.7]))
-    >>> u = np.random.randn(ulen)
-    >>> d = np.convolve(u, coeff)
-    >>>
-    >>> M = 20  # No. of taps
-    >>> step = 1  # Step size
-    >>> y, e, w = nlms(u, d, M, step)
-    >>> print np.allclose(w, coeff)
-    True
-
-    Extended Example
-    ----------------
-    >>> import numpy as np
-    >>>
-    >>> np.random.seed(1337)
-    >>> N = 1000
-    >>> coeffs = np.concatenate(([13], np.zeros(9), [-3], np.zeros(8), [-.2]))
-    >>> u = np.random.randn(20000)  # Note len(u) >> N but we limit iterations
-    >>> d = np.convolve(u, coeffs)
-    >>>
-    >>> M = 20  # No. of taps
-    >>> step = 1  # Step size
-    >>> y, e, w = nlms(u, d, M, step, N=N, returnCoeffs=True)
-    >>> y.shape == (N,)
-    True
-    >>> e.shape == (N,)
-    True
-    >>> w.shape == (N, M)
-    True
-    >>> # Calculate mean square weight error
-    >>> mswe = np.mean((w - coeffs)**2, axis=1)
-    >>> # Should never increase so diff should above be > 0
-    >>> diff = np.diff(mswe)
-    >>> (diff <= 1e-10).all()
-    True
-    """
+"""
     # Check epsilon
     _pchk.checkRegFactor(eps)
     # Num taps check
