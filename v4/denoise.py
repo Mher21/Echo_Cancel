@@ -3,7 +3,7 @@ import numpy as np
 from scipy import fft
 import scipy.io.wavfile as wavfile
 import scipy.fftpack as fftpk
-from statistics import mean 
+from statistics import mean
 
 
 def fft_filt(signal):
@@ -35,13 +35,13 @@ warnings.filterwarnings('ignore')
 
 plt.figure(figsize=(12, 5))
 plt.subplot(211)
-plt.plot(freqs[range(len(FFT)//2)], FFT[range(len(FFT)//2)])                                                          
+plt.plot(freqs[range(len(FFT)//2)], abs(FFT[range(len(FFT)//2)]))                                                          
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('Amplitude before filter')
 
 plt.subplot(212)
 FFT_filt=fft_filt(signal)
-plt.plot(freqs[range(len(FFT_filt)//2)], FFT_filt[range(len(FFT_filt)//2)])   
+plt.plot(freqs[range(len(FFT_filt)//2)], abs(FFT_filt[range(len(FFT_filt)//2)]))   
 plt.xlabel('Frequency (Hz)')
 plt.ylabel('Amplitude after filter')
 plt.show()
