@@ -1,14 +1,11 @@
 import numpy as np
-import IPython
 import wave
 import struct
 import matplotlib.pyplot as plt
 from scipy import signal
 from matplotlib import pyplot as plt
 audiofile_wave =  '/home/mher/Project_Python/v5/with_noise.wav'
-#1213131
 
-IPython.display.Audio(audiofile_wave)
 from scipy import fftpack
 
 wav_file = wave.open(audiofile_wave, 'r')
@@ -40,21 +37,21 @@ fig = plt.figure(figsize = (25, 6))
 fig.suptitle('Original wav data')
 
 ax1 = fig.add_subplot(1,3,1)
-ax1.set_title("Original audio wave / Spatial Domain")
+ax1.set_title("Original audio wave")
 ax1.set_xlabel("Time(s)")
 ax1.set_ylabel("Amplitude (16 bit depth - Calulated above)")
 
 ax1.plot(frames_wave)
 
 ax2 = fig.add_subplot(1,3,2)
-ax2.set_title("Frequency by magnitude (Max at {} Hz) / Frequency Domain".format(np.where(magnitude == np.max(magnitude))[0][0]))
+ax2.set_title("Frequency by magnitude  / Frequency Domain")
 ax2.set_xlabel("Frequency (Hertz)")
 ax2.set_ylabel("Magnitude (normalized)")
 ax2.set_xlim(0, 44100)  # we are not interested in rest
 ax2.plot(magnitude / nframes)  # Normalizing magnitude
 
 ax3 = fig.add_subplot(1,3,3)
-ax3.set_title("[Unclipped]Frequency by magnitude (Max at {} Hz) / Frequency Domain".format(np.where(magnitude == np.max(magnitude))[0][0]))
+ax3.set_title("Frequency by magnitude  / Frequency Domain")
 ax3.set_xlabel("Frequency (Hertz)")
 ax3.set_ylabel("Magnitude (normalized)")
 ax3.plot(magnitude / nframes)  # Normalizing magnitude
@@ -66,29 +63,14 @@ def butter_pass_filter(data, cutoff, fs, order=5):
     nyq = 0.5 * fs # Nyquist frequency
     normal_cutoff = cutoff / nyq  # A fraction b/w 0 and 1 of sampling rate
     print("normal_cutoff:", normal_cutoff, (data.shape[0] / 2) * normal_cutoff) # Tricky ? 
-    b, a = signal.butter(order, normal_cutoff, btype='low', analog=False)
+    b, a = signal.butter(order, normal_cutoff, btype='lowpass', analog=False)
     y = signal.filtfilt(b, a, data)
-
-    def _plot_graph():
-      # Get the filter coefficients so we can check its frequency response.
-      # Plot the frequency response.
-      w, h = signal.freqz(b, a, worN=8000)
-      plt.subplot(2, 1, 1)
-      plt.plot(0.5 *fs*w/np.pi, np.abs(h), 'b')
-      plt.plot(cutoff, 0.5 * np.sqrt(2), 'ko')
-      plt.axvline(cutoff, color='k')
-      plt.xlim(0, 0.5*fs)
-      plt.title("Filter Frequency Response")
-      plt.xlabel('Frequency [Hz]')
-      plt.grid()
-      plt.show()
-    _plot_graph()
     return y
 
 # Filter requirements.
 order = 1
 fs = framerate #* 6.28  # sample rate, Hz
-cutoff =  1200 #* 6.28      # desired cutoff frequency of the filter, Hz
+cutoff =  1600 #* 6.28      # desired cutoff frequency of the filter, Hz
 
 # Get the filter coefficients so we can check its frequency response.
 y = butter_pass_filter(frames_wave, cutoff, fs, order)
@@ -129,7 +111,7 @@ ax4.set_xlim(0, 44100)  # we are not interested in rest
 ax4.plot(magnitude / nframes, 'r')
 
 plt.show()
-IPython.display.Audio(data=y, rate=44100)
+
 amplitude = 1
 filtered_file = "/home/mher/Project_Python/v5/without_noise.wav"
 wav_file=wave.open(filtered_file, 'w')
@@ -141,4 +123,4 @@ for s in y:
     wav_file.writeframes(struct.pack('h', int(s*amplitude)))
 
 wav_file.close()
-IPython.display.Audio(filtered_file)
+
